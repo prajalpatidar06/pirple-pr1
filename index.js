@@ -5,7 +5,7 @@ const fs = require("fs");
 const StringDecoder = require("string_decoder").StringDecoder;
 const config = require("./config");
 const handlers = require("./lib/handlers");
-
+const helpers = require("./lib/helpers");
 // setup HTTP PORT
 var httpServer = http.createServer((req, res) => unified(req, res));
 
@@ -47,7 +47,7 @@ var unified = function (req, res) {
         : handlers.notFound;
     var data = {
       trimmedPath,
-      payload: buffer,
+      payload: helpers.parseJsonToObject(buffer),
       method,
       headers,
       queryStringObject,
@@ -59,7 +59,6 @@ var unified = function (req, res) {
       res.setHeader("Content-Type", "application/json");
       res.writeHead(statusCode);
       res.end(payloadString);
-      console.log(statusCode, payload);
     });
   });
 };
@@ -67,4 +66,5 @@ var unified = function (req, res) {
 var routers = {
   ping: handlers.ping,
   users: handlers.users,
+  tokens: handlers.tokens,
 };
